@@ -102,8 +102,6 @@ export default function Home() {
           </div>
         </section>
 
-        <TestimonialCard />
-
         {/* Quick Contact */}
         <section className={`py-20 ${isDarkMode ? 'bg-gray-900' : 'bg-dark'} ${isDarkMode ? 'text-cream' : 'text-cream'}`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
