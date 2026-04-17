@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: 'Vazirmatn', sans-serif;
+  direction: rtl;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-cream text-dark;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gold rounded-full hover:bg-yellow-600;
+}
+
+/* Custom classes */
+.btn-gold {
+  @apply px-6 py-3 bg-gold text-dark font-semibold rounded-lg hover:bg-yellow-600 transition-all duration-300 shadow-lg;
+}
+
+.btn-dark {
+  @apply px-6 py-3 bg-dark text-cream font-semibold rounded-lg hover:bg-gray-900 transition-all duration-300;
+}
+
+.section-title {
+  @apply text-3xl md:text-4xl font-bold text-dark mb-2;
+}
+
+.section-subtitle {
+  @apply text-gray-600 text-lg mb-8;
+}
+
+.card-shadow {
+  @apply shadow-lg hover:shadow-2xl transition-shadow duration-300;
+}
