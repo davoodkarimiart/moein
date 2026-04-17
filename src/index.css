@@ -2,6 +2,13 @@
 
 @import "tailwindcss";
 
+:root {
+  --color-gold: #D4AF37;
+  --color-cream: #FBF8F3;
+  --color-dark: #1a1a1a;
+  --color-accent: #8B7355;
+}
+
 * {
   font-family: 'Vazirmatn', sans-serif;
   direction: rtl;
@@ -14,6 +21,12 @@ html {
 body {
   background-color: #FBF8F3;
   color: #1a1a1a;
+  transition: background-color 300ms, color 300ms;
+}
+
+html.dark body {
+  background-color: #111827;
+  color: #f3f4f6;
 }
 
 /* Custom scrollbar */

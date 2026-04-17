@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Card from '../common/Card';
 import { Star } from 'lucide-react';
+import { ThemeContext } from '../../context/ThemeContext';
 
 export default function TestimonialCard() {
+  const { isDarkMode } = useContext(ThemeContext);
+
   const testimonials = [
     {
       name: 'فاطمه محمدی',
@@ -25,11 +28,11 @@ export default function TestimonialCard() {
   ];
 
   return (
-    <section className="py-20 bg-white">
+    <section className={`py-20 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="section-title">نظرات مشتریان</h2>
-          <p className="section-subtitle">صدای راضی مشتریان ما</p>
+          <p className={`section-subtitle ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>صدای راضی مشتریان ما</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
@@ -40,10 +43,10 @@ export default function TestimonialCard() {
                   <Star key={i} size={20} className="fill-gold text-gold" />
                 ))}
               </div>
-              <p className="text-gray-600 mb-4 italic">"{testimonial.text}"</p>
-              <div className="border-t border-gray-200 pt-4">
-                <p className="font-bold text-dark">{testimonial.name}</p>
-                <p className="text-sm text-gray-500">{testimonial.role}</p>
+              <p className={`mb-4 italic ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>"{testimonial.text}"</p>
+              <div className={`border-t ${isDarkMode ? 'border-gray-700' : 'border-gray-200'} pt-4`}>
+                <p className={`font-bold ${isDarkMode ? 'text-cream' : 'text-dark'}`}>{testimonial.name}</p>
+                <p className={`text-sm ${isDarkMode ? 'text-gray-500' : 'text-gray-500'}`}>{testimonial.role}</p>
               </div>
             </Card>
           ))}
