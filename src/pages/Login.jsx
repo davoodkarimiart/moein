@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import Button from '../components/common/Button';
-import Header from '../components/layout/Header';
-import Footer from '../components/layout/Footer';
+import { useTheme } from '../context/ThemeContext';
 import { AlertCircle } from 'lucide-react';
 
 export default function Login() {
@@ -12,6 +10,7 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+  const { isDarkMode } = useTheme();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -36,18 +35,16 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-cream">
-      <Header />
-      <main className="flex-1 flex items-center justify-center py-12 px-4">
-        <div className="w-full max-w-md">
-          <div className="bg-white rounded-2xl shadow-2xl p-8">
-            {/* Logo */}
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-gold rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-4xl">📸</span>
-              </div>
-              <h1 className="text-3xl font-bold text-dark">اتلیه معین</h1>
-              <p className="text-gray-500 mt-2">ورود به سیستم</p>
+    <div className={`min-h-screen flex items-center justify-center py-12 px-4 ${isDarkMode ? 'bg-slate-900' : 'bg-cream'}`}>
+      <div className="w-full max-w-md">
+        <div className={`rounded-2xl shadow-2xl p-8 ${isDarkMode ? 'bg-slate-800' : 'bg-white'}`}>
+          {/* Logo */}
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-gold rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-4xl">📸</span>
+            </div>
+            <h1 className={`text-3xl font-bold ${isDarkMode ? 'text-cream' : 'text-dark'}`}>اتلیه معین</h1>
+            <p className={isDarkMode ? 'text-gray-400 mt-2' : 'text-gray-500 mt-2'}>ورود به سیستم</p>
             </div>
 
             {error && (
@@ -100,8 +97,6 @@ export default function Login() {
             </div>
           </div>
         </div>
-      </main>
-      <Footer />
-    </div>
-  );
+      </div>
+    );
 }

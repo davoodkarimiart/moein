@@ -1,10 +1,5 @@
 import React, { useContext } from 'react';
-import Header from '../components/layout/Header';
-import Footer from '../components/layout/Footer';
-import HeroSection from '../components/sections/HeroSection';
-import ServiceCard from '../components/sections/ServiceCard';
-import TestimonialCard from '../components/sections/TestimonialCard';
-import { ThemeContext } from '../context/ThemeContext';
+import { useTheme } from '../context/ThemeContext';
 
 const galleryImages = [
   { id: 1, src: '/pic/102321.jpeg', alt: 'عروسی ۱' },
@@ -16,17 +11,72 @@ const galleryImages = [
 ];
 
 export default function Home() {
-  const { isDarkMode } = useContext(ThemeContext);
+  const { isDarkMode } = useTheme();
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1">
-        <HeroSection />
-        <ServiceCard />
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <section className={`py-24 md:py-32 ${isDarkMode ? 'bg-gradient-to-b from-slate-900 to-slate-800' : 'bg-gradient-to-b from-cream to-gray-100'}`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                <span className="text-gold">اتلیه معین</span>
+                <br />
+                حرفه‌ای ترین استودیوی عکاسی
+              </h1>
+              <p className={`text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-8 leading-relaxed`}>
+                ما تخصص داریم در عکاسی حرفه‌ای برای مراسم‌های خاص، پوتریه و فتوگرافی تجاری.
+              </p>
+              <div className="flex gap-4">
+                <a href="#gallery" className="px-8 py-3 bg-gold text-dark rounded-lg hover:bg-yellow-600 transition-all font-semibold">
+                  نمونه کارها
+                </a>
+                <a href="/contact" className="px-8 py-3 border-2 border-gold text-gold rounded-lg hover:bg-gold hover:text-dark transition-all font-semibold">
+                  تماس با ما
+                </a>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="rounded-2xl overflow-hidden shadow-2xl">
+                {galleryImages[0] && (
+                  <img
+                    src={galleryImages[0].src}
+                    alt="استودیوی عکاسی"
+                    className="w-full h-96 object-cover"
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+        {/* Services */}
+        <section className={`py-20 ${isDarkMode ? 'bg-slate-800' : 'bg-white'}`}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="section-title">خدمات ما</h2>
+              <p className={`section-subtitle ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>انواع خدمات عکاسی حرفه‌ای</p>
+            </div>
+            <div className="grid md:grid-cols-4 gap-6">
+              {[
+                { title: 'عکاسی عروسی', desc: 'عکاسی حرفه‌ای از مراسم عروسی' },
+                { title: 'عکاسی پرتره', desc: 'پوتریه شخصی و تجاری' },
+                { title: 'عکاسی رویداد', desc: 'پوشش رویدادها و مراسم' },
+                { title: 'عکاسی محصول', desc: 'عکاسی تجاری و فتوگرافی محصول' }
+              ].map((service, i) => (
+                <div key={i} className={`p-6 rounded-lg ${isDarkMode ? 'bg-slate-700' : 'bg-gray-50'} hover:shadow-lg transition-shadow`}>
+                  <h3 className={`text-xl font-bold mb-3 ${isDarkMode ? 'text-cream' : 'text-dark'}`}>{service.title}</h3>
+                  <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>{service.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
         
         {/* Gallery Preview */}
-        <section className={`py-20 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+        <section id="gallery" className={`py-20 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="section-title">نمونه کارها</h2>
@@ -68,8 +118,6 @@ export default function Home() {
             </a>
           </div>
         </section>
-      </main>
-      <Footer />
-    </div>
-  );
+      </div>
+    );
 }

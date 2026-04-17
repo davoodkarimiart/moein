@@ -1,131 +1,167 @@
 import React, { useState } from 'react';
-import Sidebar from '../components/layout/Sidebar';
-import Card from '../components/common/Card';
-import Button from '../components/common/Button';
-import Modal from '../components/common/Modal';
 import { useAuth } from '../context/AuthContext';
-import { Trash2, Edit, Plus, Upload } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
+import { useNavigate } from 'react-router-dom';
+import { LogOut, Plus, Trash2 } from 'lucide-react';
 
 export default function AdminDashboard() {
-  const { employees, addEmployee, deleteEmployee, gallery, addGalleryImage } = useAuth();
+  const { user, employees, addEmployee, deleteEmployee, logout } = useAuth();
+  const { isDarkMode } = useTheme();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
-  const [showEmployeeModal, setShowEmployeeModal] = useState(false);
-  const [showGalleryModal, setShowGalleryModal] = useState(false);
-  const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'employee' });
-  const [galleryData, setGalleryData] = useState({ title: '', category: 'wedding' });
+  const [showAddEmployee, setShowAddEmployee] = useState(false);
+  const [formData, setFormData] = useState({ name: '', email: '', password: '' });
 
   const handleAddEmployee = (e) => {
     e.preventDefault();
     if (formData.name && formData.email && formData.password) {
-      addEmployee(formData);
-      setFormData({ name: '', email: '', password: '', role: 'employee' });
-      setShowEmployeeModal(false);
+      addEmployee({
+        ...formData,
+        role: 'employee',
+        joinDate: new Date().toLocaleDateString('fa-IR')
+      });
+      setFormData({ name: '', email: '', password: '' });
+      setShowAddEmployee(false);
     }
   };
 
-  const handleAddGallery = (e) => {
-    e.preventDefault();
-    if (galleryData.title) {
-      addGalleryImage({
-        title: galleryData.title,
-        category: galleryData.category,
-        url: `https://via.placeholder.com/400x300?text=${galleryData.title}`,
-        uploadedBy: 'admin'
-      });
-      setGalleryData({ title: '', category: 'wedding' });
-      setShowGalleryModal(false);
-    }
+  const handleLogout = () => {
+    logout();
+    navigate('/');
   };
 
   return (
-    <Sidebar>
-      <div className="space-y-6">
+    <div className={`min-h-screen ${isDarkMode ? 'bg-slate-900' : 'bg-cream'}`}>
+      {/* Header */}
+      <div className={`${isDarkMode ? 'bg-slate-800' : 'bg-white'} border-b ${isDarkMode ? 'border-slate-700' : 'border-gray-200'} p-4`}>
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <h1 className={`text-2xl font-bold ${isDarkMode ? 'text-cream' : 'text-dark'}`}>
+            داشبورد ادمین
+          </h1>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+          >
+            <LogOut size={20} />
+            خروج
+          </button>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Tabs */}
-        <div className="flex gap-4 border-b border-gray-200">
-          <button
-            onClick={() => setActiveTab('overview')}
-            className={`py-3 px-4 font-semibold border-b-2 transition ${
-              activeTab === 'overview'
-                ? 'border-gold text-gold'
-                : 'border-transparent text-gray-500 hover:text-dark'
-            }`}
-          >
-            نمای کلی
-          </button>
-          <button
-            onClick={() => setActiveTab('employees')}
-            className={`py-3 px-4 font-semibold border-b-2 transition ${
-              activeTab === 'employees'
-                ? 'border-gold text-gold'
-                : 'border-transparent text-gray-500 hover:text-dark'
-            }`}
-          >
-            کارمندان
-          </button>
-          <button
-            onClick={() => setActiveTab('gallery')}
-            className={`py-3 px-4 font-semibold border-b-2 transition ${
-              activeTab === 'gallery'
-                ? 'border-gold text-gold'
-                : 'border-transparent text-gray-500 hover:text-dark'
-            }`}
-          >
-            گالری
-          </button>
+        <div className="flex gap-4 mb-8">
+          {[
+            { id: 'overview', label: 'خانه' },
+            { id: 'employees', label: 'مدیریت کارمندان' },
+            { id: 'gallery', label: 'مدیریت گالری' },
+            { id: 'settings', label: 'تنظیمات' }
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-4 py-2 rounded transition ${
+                activeTab === tab.id
+                  ? `bg-gold text-dark font-semibold`
+                  : `${isDarkMode ? 'bg-slate-800 text-cream hover:bg-slate-700' : 'bg-gray-100 text-dark hover:bg-gray-200'}`
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
 
         {/* Overview Tab */}
         {activeTab === 'overview' && (
-          <div className="grid md:grid-cols-3 gap-6">
-            <Card>
-              <div className="text-4xl font-bold text-gold mb-2">{employees.length + 1}</div>
-              <p className="text-gray-600">کل کارمندان</p>
-            </Card>
-            <Card>
-              <div className="text-4xl font-bold text-gold mb-2">{gallery.length}</div>
-              <p className="text-gray-600">عکس‌های گالری</p>
-            </Card>
-            <Card>
-              <div className="text-4xl font-bold text-gold mb-2">۱۲۸</div>
-              <p className="text-gray-600">کل رزروها</p>
-            </Card>
+          <div className={`${isDarkMode ? 'bg-slate-800' : 'bg-white'} rounded-lg p-6`}>
+            <h2 className={`text-2xl font-bold mb-4 ${isDarkMode ? 'text-cream' : 'text-dark'}`}>
+              خوش آمدید، {user?.name}
+            </h2>
+            <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
+              شما به‌عنوان مدیر سیستم وارد شده‌اید.
+            </p>
           </div>
         )}
 
         {/* Employees Tab */}
         {activeTab === 'employees' && (
           <div>
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-dark">مدیریت کارمندان</h2>
-              <Button
-                variant="gold"
-                onClick={() => setShowEmployeeModal(true)}
-                className="flex items-center gap-2"
-              >
-                <Plus size={20} /> کارمند جدید
-              </Button>
-            </div>
+            <button
+              onClick={() => setShowAddEmployee(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-gold text-dark rounded font-semibold hover:bg-yellow-600 transition mb-6"
+            >
+              <Plus size={20} />
+              افزودن کارمند جدید
+            </button>
 
-            <div className="space-y-4">
-              {employees.map((emp) => (
-                <Card key={emp.id} className="flex justify-between items-center">
+            {/* Add Employee Modal */}
+            {showAddEmployee && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className={`${isDarkMode ? 'bg-slate-800' : 'bg-white'} rounded-lg p-6 max-w-md w-full`}>
+                  <h3 className={`text-xl font-bold mb-4 ${isDarkMode ? 'text-cream' : 'text-dark'}`}>
+                    افزودن کارمند جدید
+                  </h3>
+                  <form onSubmit={handleAddEmployee} className="space-y-4">
+                    <input
+                      type="text"
+                      placeholder="نام"
+                      value={formData.name}
+                      onChange={(e) => setFormData({...formData, name: e.target.value})}
+                      className={`w-full px-4 py-2 rounded border ${isDarkMode ? 'bg-slate-700 border-slate-600 text-cream' : 'bg-white border-gray-300'}`}
+                      required
+                    />
+                    <input
+                      type="email"
+                      placeholder="ایمیل"
+                      value={formData.email}
+                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      className={`w-full px-4 py-2 rounded border ${isDarkMode ? 'bg-slate-700 border-slate-600 text-cream' : 'bg-white border-gray-300'}`}
+                      required
+                    />
+                    <input
+                      type="password"
+                      placeholder="رمز عبور"
+                      value={formData.password}
+                      onChange={(e) => setFormData({...formData, password: e.target.value})}
+                      className={`w-full px-4 py-2 rounded border ${isDarkMode ? 'bg-slate-700 border-slate-600 text-cream' : 'bg-white border-gray-300'}`}
+                      required
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        type="submit"
+                        className="flex-1 px-4 py-2 bg-gold text-dark rounded font-semibold hover:bg-yellow-600"
+                      >
+                        افزودن
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowAddEmployee(false)}
+                        className={`flex-1 px-4 py-2 rounded font-semibold ${isDarkMode ? 'bg-slate-700 text-cream hover:bg-slate-600' : 'bg-gray-200 text-dark hover:bg-gray-300'}`}
+                      >
+                        انصراف
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+
+            {/* Employees List */}
+            <div className="grid gap-4">
+              {employees.map(emp => (
+                <div key={emp.id} className={`${isDarkMode ? 'bg-slate-800' : 'bg-white'} rounded-lg p-4 flex justify-between items-center`}>
                   <div>
-                    <h3 className="font-bold text-dark">{emp.name}</h3>
-                    <p className="text-sm text-gray-500">{emp.email}</p>
-                    <p className="text-xs text-gray-400 mt-1">تاریخ عضویت: {emp.joinDate}</p>
+                    <h4 className={`font-bold ${isDarkMode ? 'text-cream' : 'text-dark'}`}>{emp.name}</h4>
+                    <p className={isDarkMode ? 'text-gray-400 text-sm' : 'text-gray-600 text-sm'}>{emp.email}</p>
                   </div>
-                  <div className="flex gap-2">
-                    <button className="p-2 hover:bg-blue-100 rounded transition">
-                      <Edit size={20} className="text-blue-600" />
-                    </button>
-                    <button
-                      onClick={() => deleteEmployee(emp.id)}
-                      className="p-2 hover:bg-red-100 rounded transition"
-                    >
-                      <Trash2 size={20} className="text-red-600" />
-                    </button>
-                  </div>
-                </Card>
+                  <button
+                    onClick={() => deleteEmployee(emp.id)}
+                    className="p-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                  >
+                    <Trash2 size={20} />
+                  </button>
+                </div>
               ))}
             </div>
           </div>
@@ -133,107 +169,28 @@ export default function AdminDashboard() {
 
         {/* Gallery Tab */}
         {activeTab === 'gallery' && (
-          <div>
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-dark">مدیریت گالری</h2>
-              <Button
-                variant="gold"
-                onClick={() => setShowGalleryModal(true)}
-                className="flex items-center gap-2"
-              >
-                <Upload size={20} /> افزودن عکس
-              </Button>
-            </div>
+          <div className={`${isDarkMode ? 'bg-slate-800' : 'bg-white'} rounded-lg p-6`}>
+            <h2 className={`text-2xl font-bold mb-4 ${isDarkMode ? 'text-cream' : 'text-dark'}`}>
+              مدیریت گالری
+            </h2>
+            <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
+              بخش آپلود عکس به زودی فعال می‌شود
+            </p>
+          </div>
+        )}
 
-            <div className="grid md:grid-cols-4 gap-4">
-              {gallery.map((img) => (
-                <Card key={img.id} className="p-0 overflow-hidden">
-                  <img
-                    src={img.url}
-                    alt={img.title}
-                    className="w-full h-32 object-cover"
-                  />
-                  <div className="p-4">
-                    <p className="font-semibold text-dark text-sm">{img.title}</p>
-                    <p className="text-xs text-gray-500">{img.category}</p>
-                  </div>
-                </Card>
-              ))}
-            </div>
+        {/* Settings Tab */}
+        {activeTab === 'settings' && (
+          <div className={`${isDarkMode ? 'bg-slate-800' : 'bg-white'} rounded-lg p-6`}>
+            <h2 className={`text-2xl font-bold mb-4 ${isDarkMode ? 'text-cream' : 'text-dark'}`}>
+              تنظیمات
+            </h2>
+            <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
+              تنظیمات سایت به زودی فعال می‌شود
+            </p>
           </div>
         )}
       </div>
-
-      {/* Modals */}
-      <Modal
-        isOpen={showEmployeeModal}
-        onClose={() => setShowEmployeeModal(false)}
-        title="افزودن کارمند جدید"
-      >
-        <form onSubmit={handleAddEmployee} className="space-y-4">
-          <input
-            type="text"
-            placeholder="نام"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gold"
-          />
-          <input
-            type="email"
-            placeholder="ایمیل"
-            value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gold"
-          />
-          <input
-            type="password"
-            placeholder="رمز عبور"
-            value={formData.password}
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gold"
-          />
-          <select
-            value={formData.role}
-            onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gold"
-          >
-            <option value="employee">کارمند</option>
-            <option value="admin">مدیر</option>
-          </select>
-          <Button type="submit" variant="gold" className="w-full">
-            افزودن
-          </Button>
-        </form>
-      </Modal>
-
-      <Modal
-        isOpen={showGalleryModal}
-        onClose={() => setShowGalleryModal(false)}
-        title="افزودن عکس"
-      >
-        <form onSubmit={handleAddGallery} className="space-y-4">
-          <input
-            type="text"
-            placeholder="عنوان عکس"
-            value={galleryData.title}
-            onChange={(e) => setGalleryData({ ...galleryData, title: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gold"
-          />
-          <select
-            value={galleryData.category}
-            onChange={(e) => setGalleryData({ ...galleryData, category: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-gold"
-          >
-            <option value="wedding">عروسی</option>
-            <option value="portrait">پرتره</option>
-            <option value="event">رویداد</option>
-            <option value="commercial">تجاری</option>
-          </select>
-          <Button type="submit" variant="gold" className="w-full">
-            افزودن
-          </Button>
-        </form>
-      </Modal>
-    </Sidebar>
+    </div>
   );
 }

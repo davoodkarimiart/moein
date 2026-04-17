@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
+import Header from './components/layout/Header';
+import Footer from './components/layout/Footer';
 
 // Pages
 import Home from './pages/Home';
@@ -12,9 +15,20 @@ import Services from './pages/Services';
 import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
 
+// Loading Component
+const LoadingSpinner = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold"></div>
+  </div>
+);
+
 // Protected Route Component
 const ProtectedRoute = ({ element, requiredRole }) => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
@@ -28,8 +42,14 @@ const ProtectedRoute = ({ element, requiredRole }) => {
 };
 
 function AppContent() {
+  const isDashboard = window.location.pathname.includes('dashboard');
+
   return (
-    <Routes>
+    <div className="flex flex-col min-h-screen">
+      {!isDashboard && <Header />}
+      <main className="flex-grow">
+        <Suspense fallback={<LoadingSpinner />}>
+          <Routes>
       {/* Public Routes */}
       <Route path="/" element={<Home />} />
       <Route path="/about" element={<About />} />
@@ -50,16 +70,22 @@ function AppContent() {
 
       {/* Fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+          </Routes>
+        </Suspense>
+      </main>
+      {!isDashboard && <Footer />}
+    </div>
   );
 }
 
 function App() {
   return (
     <Router>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </ThemeProvider>
     </Router>
   );
 }

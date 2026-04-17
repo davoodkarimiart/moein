@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
-import Header from '../components/layout/Header';
-import Footer from '../components/layout/Footer';
-import Button from '../components/common/Button';
-import Card from '../components/common/Card';
-import { Mail, Phone, MapPin, Clock } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
+import { Mail, Phone, MapPin } from 'lucide-react';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -13,6 +10,7 @@ export default function Contact() {
     message: ''
   });
   const [submitted, setSubmitted] = useState(false);
+  const { isDarkMode } = useTheme();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -23,151 +21,98 @@ export default function Contact() {
     }, 2000);
   };
 
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1">
-        {/* Hero */}
-        <section className="bg-gradient-to-b from-dark to-gray-900 text-cream py-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">تماس با <span className="text-gold">ما</span></h1>
-            <p className="text-lg text-gray-300">ما برای پاسخ به سوالات و رزرو شما آماده‌ایم</p>
-          </div>
-        </section>
+    <div className={`min-h-screen py-20 ${isDarkMode ? 'bg-slate-900' : 'bg-cream'}`}>
+      <div className="max-w-4xl mx-auto px-4">
+        <h1 className={`text-4xl font-bold mb-8 text-center ${isDarkMode ? 'text-cream' : 'text-dark'}`}>
+          تماس با <span className="text-gold">ما</span>
+        </h1>
 
-        {/* Contact Content */}
-        <section className="py-20 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid md:grid-cols-2 gap-12 mb-16">
-              {/* Contact Info */}
-              <div>
-                <h2 className="section-title mb-8">اطلاعات تماس</h2>
-                
-                <div className="space-y-6">
-                  <Card>
-                    <div className="flex items-start gap-4">
-                      <Phone className="text-gold flex-shrink-0 mt-1" size={24} />
-                      <div>
-                        <h3 className="font-bold text-dark mb-2">تلفن</h3>
-                        <p className="text-gray-600">۰۲۱-۱۲۳۴۵۶۷۸</p>
-                        <p className="text-gray-600">۰۹۱۲-۳۴۵۶۷۸۹</p>
-                      </div>
-                    </div>
-                  </Card>
-
-                  <Card>
-                    <div className="flex items-start gap-4">
-                      <Mail className="text-gold flex-shrink-0 mt-1" size={24} />
-                      <div>
-                        <h3 className="font-bold text-dark mb-2">ایمیل</h3>
-                        <p className="text-gray-600">info@moein.com</p>
-                        <p className="text-gray-600">booking@moein.com</p>
-                      </div>
-                    </div>
-                  </Card>
-
-                  <Card>
-                    <div className="flex items-start gap-4">
-                      <MapPin className="text-gold flex-shrink-0 mt-1" size={24} />
-                      <div>
-                        <h3 className="font-bold text-dark mb-2">آدرس</h3>
-                        <p className="text-gray-600">تهران، خیابان فردوسی</p>
-                        <p className="text-gray-600">پلاک ۱۲۳، واحد ۵</p>
-                      </div>
-                    </div>
-                  </Card>
-
-                  <Card>
-                    <div className="flex items-start gap-4">
-                      <Clock className="text-gold flex-shrink-0 mt-1" size={24} />
-                      <div>
-                        <h3 className="font-bold text-dark mb-2">ساعات کاری</h3>
-                        <p className="text-gray-600">شنبه تا پنجشنبه: ۱۰ صبح تا ۸ شب</p>
-                        <p className="text-gray-600">جمعه: تعطیل</p>
-                      </div>
-                    </div>
-                  </Card>
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Contact Info */}
+          <div>
+            <h2 className={`text-2xl font-bold mb-6 ${isDarkMode ? 'text-cream' : 'text-dark'}`}>اطلاعات تماس</h2>
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Phone className="text-gold" size={24} />
+                <div>
+                  <p className={`font-semibold ${isDarkMode ? 'text-cream' : 'text-dark'}`}>تلفن</p>
+                  <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>۰۹۱۲-۸۹۰۱۲۳۴</p>
                 </div>
               </div>
-
-              {/* Contact Form */}
-              <div>
-                <h2 className="section-title mb-8">ارسال پیام</h2>
-                
-                {submitted && (
-                  <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-                    <p className="text-green-700 font-semibold">✓ پیام شما با موفقیت ارسال شد!</p>
-                  </div>
-                )}
-
-                <Card>
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-dark mb-2">نام</label>
-                      <input
-                        type="text"
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold focus:ring-opacity-20"
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-dark mb-2">ایمیل</label>
-                      <input
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold focus:ring-opacity-20"
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-dark mb-2">تلفن</label>
-                      <input
-                        type="tel"
-                        value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold focus:ring-opacity-20"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-dark mb-2">پیام</label>
-                      <textarea
-                        value={formData.message}
-                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                        rows="5"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold focus:ring-opacity-20"
-                        required
-                      />
-                    </div>
-
-                    <Button type="submit" variant="gold" className="w-full">
-                      ارسال پیام
-                    </Button>
-                  </form>
-                </Card>
+              <div className="flex items-center gap-3">
+                <Mail className="text-gold" size={24} />
+                <div>
+                  <p className={`font-semibold ${isDarkMode ? 'text-cream' : 'text-dark'}`}>ایمیل</p>
+                  <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>info@moein.ir</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <MapPin className="text-gold mt-1" size={24} />
+                <div>
+                  <p className={`font-semibold ${isDarkMode ? 'text-cream' : 'text-dark'}`}>آدرس</p>
+                  <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>تهران، خیابان آزادی، پلاک ۱۲۳</p>
+                </div>
               </div>
             </div>
-
-            {/* Map */}
-            <div className="rounded-2xl overflow-hidden shadow-2xl">
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3237.7596635689916!2d51.41921872346897!3d35.76869272343969!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzXCsDQ2JzA3LjMiTiA1McKB0LDCsDAyJzEwLjEiRQ!5e0!3m2!1sfa!2sir!4v1234567890"
-                width="100%"
-                height="400"
-                style={{ border: 0 }}
-                allowFullScreen=""
-                loading="lazy"
-              />
-            </div>
           </div>
-        </section>
-      </main>
-      <Footer />
+
+          {/* Contact Form */}
+          <div>
+            <h2 className={`text-2xl font-bold mb-6 ${isDarkMode ? 'text-cream' : 'text-dark'}`}>فرم تماس</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <input
+                type="text"
+                name="name"
+                placeholder="نام خود"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                className={`w-full px-4 py-2 rounded border ${isDarkMode ? 'bg-slate-800 border-slate-700 text-cream' : 'bg-white border-gray-300 text-dark'}`}
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="ایمیل"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className={`w-full px-4 py-2 rounded border ${isDarkMode ? 'bg-slate-800 border-slate-700 text-cream' : 'bg-white border-gray-300 text-dark'}`}
+              />
+              <input
+                type="tel"
+                name="phone"
+                placeholder="تلفن"
+                value={formData.phone}
+                onChange={handleChange}
+                className={`w-full px-4 py-2 rounded border ${isDarkMode ? 'bg-slate-800 border-slate-700 text-cream' : 'bg-white border-gray-300 text-dark'}`}
+              />
+              <textarea
+                name="message"
+                placeholder="پیام"
+                value={formData.message}
+                onChange={handleChange}
+                rows="5"
+                required
+                className={`w-full px-4 py-2 rounded border ${isDarkMode ? 'bg-slate-800 border-slate-700 text-cream' : 'bg-white border-gray-300 text-dark'}`}
+              ></textarea>
+              <button
+                type="submit"
+                className="w-full px-4 py-2 bg-gold text-dark rounded font-semibold hover:bg-yellow-600 transition"
+              >
+                {submitted ? 'ارسال شد ✓' : 'ارسال'}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
