@@ -1,3 +1,4 @@
+/** @type {import('tailwindcss').Config} */
 export default {
   content: [
     "./index.html",
@@ -6,7 +7,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        gold: '#D4AF37',
+        gold: {
+          DEFAULT: '#D4AF37',
+          600: '#ca9d1a',
+        },
         cream: '#FBF8F3',
         dark: '#1a1a1a',
         accent: '#8B7355',
@@ -16,5 +20,4 @@ export default {
       },
     },
   },
-  plugins: [],
 }
