@@ -1,200 +1,95 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react'
 
-const AuthContext = createContext();
+const AuthContext = createContext()
+
+const defaultEmployees = [
+  { id: 1, name: 'احمد علی', email: 'ahmad@moein.com', phone: '09120000001', role: 'employee' },
+  { id: 2, name: 'فاطمه رحیمی', email: 'fateme@moein.com', phone: '09120000002', role: 'employee' }
+]
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [employees, setEmployees] = useState([]);
-  const [gallery, setGallery] = useState([]);
-  const [bookings, setBookings] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState(null)
+  const [employees, setEmployees] = useState(defaultEmployees)
+  const [isLoading, setIsLoading] = useState(true)
 
-  // بارگذاری اطلاعات از localStorage
   useEffect(() => {
-    const storedUser = localStorage.getItem('currentUser');
-    const storedEmployees = localStorage.getItem('employees');
-    const storedGallery = localStorage.getItem('gallery');
-    const storedBookings = localStorage.getItem('bookings');
-    
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    const stored = localStorage.getItem('user-moein')
+    if (stored) {
+      try {
+        setUser(JSON.parse(stored))
+      } catch (e) {
+        console.error('Error parsing stored user:', e)
+      }
     }
-    
-    if (storedEmployees) {
-      setEmployees(JSON.parse(storedEmployees));
-    } else {
-      const defaultEmployees = [
-        {
-          id: 1,
-          name: 'علی احمدی',
-          email: 'ali@moein.com',
-          password: '123456',
-          role: 'employee',
-          joinDate: '1402/09/15'
-        }
-      ];
-      setEmployees(defaultEmployees);
-      localStorage.setItem('employees', JSON.stringify(defaultEmployees));
-    }
-
-    if (storedGallery) {
-      setGallery(JSON.parse(storedGallery));
-    } else {
-      const defaultGallery = [
-        {
-          id: 1,
-          title: 'عکس عروسی 1',
-          category: 'wedding',
-          url: 'https://via.placeholder.com/400x300?text=Wedding+1',
-          uploadedBy: 'admin',
-          uploadDate: '1405/01/15'
-        },
-        {
-          id: 2,
-          title: 'عکس عروسی 2',
-          category: 'wedding',
-          url: 'https://via.placeholder.com/400x300?text=Wedding+2',
-          uploadedBy: 'admin',
-          uploadDate: '1405/01/15'
-        },
-        {
-          id: 3,
-          title: 'عکس پروفایل',
-          category: 'portrait',
-          url: 'https://via.placeholder.com/400x300?text=Portrait+1',
-          uploadedBy: 'admin',
-          uploadDate: '1405/01/15'
-        }
-      ];
-      setGallery(defaultGallery);
-      localStorage.setItem('gallery', JSON.stringify(defaultGallery));
-    }
-
-    if (storedBookings) {
-      setBookings(JSON.parse(storedBookings));
-    }
-    
-    setIsLoading(false);
-  }, []);
+    setIsLoading(false)
+  }, [])
 
   const login = (email, password) => {
     if (email === 'admin@moein.com' && password === '123456') {
       const adminUser = {
         id: 0,
-        name: 'مدیر اتلیه',
+        name: 'ادمین',
         email: 'admin@moein.com',
         role: 'admin'
-      };
-      setUser(adminUser);
-      localStorage.setItem('currentUser', JSON.stringify(adminUser));
-      return { success: true, role: 'admin' };
+      }
+      setUser(adminUser)
+      localStorage.setItem('user-moein', JSON.stringify(adminUser))
+      return { success: true, role: 'admin' }
     }
 
-    const employee = employees.find(emp => emp.email === email && emp.password === password);
+    const employee = employees.find(emp => emp.email === email && password === '123456')
     if (employee) {
-      const employeeUser = {
-        id: employee.id,
-        name: employee.name,
-        email: employee.email,
-        role: 'employee'
-      };
-      setUser(employeeUser);
-      localStorage.setItem('currentUser', JSON.stringify(employeeUser));
-      return { success: true, role: 'employee' };
+      setUser(employee)
+      localStorage.setItem('user-moein', JSON.stringify(employee))
+      return { success: true, role: 'employee' }
     }
 
-    return { success: false, message: 'ایمیل یا رمز عبور اشتباه است' };
-  };
+    return { success: false, message: 'ایمیل یا رمز عبور نادرست است' }
+  }
 
   const logout = () => {
-    setUser(null);
-    localStorage.removeItem('currentUser');
-  };
+    setUser(null)
+    localStorage.removeItem('user-moein')
+  }
 
-  const addEmployee = (newEmployee) => {
-    const employee = {
-      ...newEmployee,
-      id: Math.max(...employees.map(e => e.id), 0) + 1
-    };
-    const updatedEmployees = [...employees, employee];
-    setEmployees(updatedEmployees);
-    localStorage.setItem('employees', JSON.stringify(updatedEmployees));
-    return employee;
-  };
-
-  const updateEmployee = (id, updatedData) => {
-    const updatedEmployees = employees.map(emp =>
-      emp.id === id ? { ...emp, ...updatedData } : emp
-    );
-    setEmployees(updatedEmployees);
-    localStorage.setItem('employees', JSON.stringify(updatedEmployees));
-  };
+  const addEmployee = (name, email, phone) => {
+    const newEmployee = {
+      id: Math.max(...employees.map(e => e.id), 0) + 1,
+      name,
+      email,
+      phone,
+      role: 'employee'
+    }
+    setEmployees([...employees, newEmployee])
+    return newEmployee
+  }
 
   const deleteEmployee = (id) => {
-    const updatedEmployees = employees.filter(emp => emp.id !== id);
-    setEmployees(updatedEmployees);
-    localStorage.setItem('employees', JSON.stringify(updatedEmployees));
-  };
+    setEmployees(employees.filter(emp => emp.id !== id))
+  }
 
-  const addGalleryImage = (image) => {
-    const newImage = {
-      ...image,
-      id: Math.max(...gallery.map(g => g.id), 0) + 1,
-      uploadDate: new Date().toLocaleDateString('fa-IR')
-    };
-    const updatedGallery = [...gallery, newImage];
-    setGallery(updatedGallery);
-    localStorage.setItem('gallery', JSON.stringify(updatedGallery));
-    return newImage;
-  };
-
-  const deleteGalleryImage = (id) => {
-    const updatedGallery = gallery.filter(img => img.id !== id);
-    setGallery(updatedGallery);
-    localStorage.setItem('gallery', JSON.stringify(updatedGallery));
-  };
-
-  const addBooking = (booking) => {
-    const newBooking = {
-      ...booking,
-      id: Math.max(...bookings.map(b => b.id || 0), 0) + 1,
-      bookingDate: new Date().toLocaleDateString('fa-IR'),
-      status: 'pending'
-    };
-    const updatedBookings = [...bookings, newBooking];
-    setBookings(updatedBookings);
-    localStorage.setItem('bookings', JSON.stringify(updatedBookings));
-    return newBooking;
-  };
-
-  const value = {
-    user,
-    employees,
-    gallery,
-    bookings,
-    isLoading,
-    login,
-    logout,
-    addEmployee,
-    updateEmployee,
-    deleteEmployee,
-    addGalleryImage,
-    deleteGalleryImage,
-    addBooking,
-    isAuthenticated: !!user
-  };
+  const isAuthenticated = !!user
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{
+      user,
+      isAuthenticated,
+      isLoading,
+      login,
+      logout,
+      employees,
+      addEmployee,
+      deleteEmployee
+    }}>
       {children}
     </AuthContext.Provider>
-  );
-};
+  )
+}
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
+  const context = useContext(AuthContext)
   if (!context) {
-    throw new Error('useAuth باید درون AuthProvider استفاده شود');
+    throw new Error('useAuth باید درون AuthProvider استفاده شود')
   }
-  return context;
-};
+  return context
+}

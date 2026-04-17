@@ -1,17 +1,22 @@
-import React, { useContext } from 'react';
-import { useTheme } from '../context/ThemeContext';
+import React from 'react'
+import { Camera, Zap, Users, Trophy } from 'lucide-react'
+import { useTheme } from '../context/ThemeContext'
+import Button from '../components/common/Button'
+import Card from '../components/common/Card'
 
 const galleryImages = [
-  { id: 1, src: '/pic/102321.jpeg', alt: 'عروسی ۱' },
-  { id: 2, src: '/pic/258-wedding+photographer+taking+pictures+of+bride+posing+on+ground+in+wedding+dress.jpg', alt: 'عروسی ۲' },
-  { id: 3, src: '/pic/eryri-post-wedding-photos-nature-inspired-couples-session.jpg', alt: 'عروسی ۳' },
-  { id: 4, src: '/pic/black-and-white-wedding-photography-alex-dimos-085.jpg', alt: 'عروسی ۴' },
-  { id: 5, src: '/pic/elegant-wedding-couple_1157-18557.avif', alt: 'عروسی ۵' },
-  { id: 6, src: '/pic/v2.jpg', alt: 'عروسی ۶' },
-];
+  '/pic/102321.jpeg',
+  '/pic/258-wedding+photographer+taking+pictures+of+bride+posing+on+ground+in+wedding+dress.jpg',
+  '/pic/eryri-post-wedding-photos-nature-inspired-couples-session.jpg',
+  '/pic/black-and-white-wedding-photography-alex-dimos-085.jpg',
+  '/pic/elegant-wedding-couple_1157-18557.avif',
+  '/pic/v2.jpg',
+  '/pic/613a5cd3a30aeb0018b4c693.webp',
+  '/pic/images.jpg'
+]
 
-export default function Home() {
-  const { isDarkMode } = useTheme();
+const Home = () => {
+  const { isDarkMode } = useTheme()
 
   return (
     <div className="min-h-screen">
@@ -28,94 +33,88 @@ export default function Home() {
               <p className={`text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} mb-8 leading-relaxed`}>
                 ما تخصص داریم در عکاسی حرفه‌ای برای مراسم‌های خاص، پوتریه و فتوگرافی تجاری.
               </p>
-              <div className="flex gap-4">
-                <a href="#gallery" className="px-8 py-3 bg-gold text-dark rounded-lg hover:bg-yellow-600 transition-all font-semibold">
-                  نمونه کارها
-                </a>
-                <a href="/contact" className="px-8 py-3 border-2 border-gold text-gold rounded-lg hover:bg-gold hover:text-dark transition-all font-semibold">
-                  تماس با ما
-                </a>
+              <div className="flex gap-4 flex-wrap">
+                <Button variant="gold" size="lg">نمونه کارها</Button>
+                <Button variant="outline" size="lg">تماس با ما</Button>
               </div>
             </div>
-            <div className="relative">
-              <div className="rounded-2xl overflow-hidden shadow-2xl">
-                {galleryImages[0] && (
-                  <img
-                    src={galleryImages[0].src}
-                    alt="استودیوی عکاسی"
-                    className="w-full h-96 object-cover"
-                  />
-                )}
-              </div>
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl h-96">
+              <img
+                src={galleryImages[0]}
+                alt="اتلیه معین"
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+              />
             </div>
           </div>
         </div>
       </section>
 
-        {/* Services */}
-        <section className={`py-20 ${isDarkMode ? 'bg-slate-800' : 'bg-white'}`}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="section-title">خدمات ما</h2>
-              <p className={`section-subtitle ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>انواع خدمات عکاسی حرفه‌ای</p>
-            </div>
-            <div className="grid md:grid-cols-4 gap-6">
-              {[
-                { title: 'عکاسی عروسی', desc: 'عکاسی حرفه‌ای از مراسم عروسی' },
-                { title: 'عکاسی پرتره', desc: 'پوتریه شخصی و تجاری' },
-                { title: 'عکاسی رویداد', desc: 'پوشش رویدادها و مراسم' },
-                { title: 'عکاسی محصول', desc: 'عکاسی تجاری و فتوگرافی محصول' }
-              ].map((service, i) => (
-                <div key={i} className={`p-6 rounded-lg ${isDarkMode ? 'bg-slate-700' : 'bg-gray-50'} hover:shadow-lg transition-shadow`}>
-                  <h3 className={`text-xl font-bold mb-3 ${isDarkMode ? 'text-cream' : 'text-dark'}`}>{service.title}</h3>
-                  <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>{service.desc}</p>
-                </div>
-              ))}
-            </div>
+      {/* Services */}
+      <section className={`py-20 ${isDarkMode ? 'bg-slate-800' : 'bg-white'}`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="section-title text-center">خدمات ما</h2>
+          <div className="grid md:grid-cols-4 gap-6 mt-12">
+            {[
+              { icon: Users, title: 'عکاسی عروسی', desc: 'عکاسی حرفه‌ای از مراسم عروسی' },
+              { icon: Camera, title: 'عکاسی پرتره', desc: 'پوتریه شخصی و تجاری' },
+              { icon: Zap, title: 'عکاسی رویداد', desc: 'پوشش رویدادها و مراسم' },
+              { icon: Trophy, title: 'عکاسی محصول', desc: 'عکاسی تجاری و فتوگرافی محصول' }
+            ].map((service, i) => (
+              <Card key={i} className="p-8 card-hover text-center">
+                <service.icon size={48} className="text-gold mx-auto mb-4" />
+                <h3 className="text-2xl font-bold text-gold mb-2">{service.title}</h3>
+                <p className="text-gray-600 dark:text-gray-300">{service.desc}</p>
+              </Card>
+            ))}
           </div>
-        </section>
-        
-        {/* Gallery Preview */}
-        <section id="gallery" className={`py-20 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="section-title">نمونه کارها</h2>
-              <p className={`section-subtitle ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>برخی از بهترین پروژه‌های ما</p>
-            </div>
+        </div>
+      </section>
 
-            <div className="grid md:grid-cols-3 gap-6">
-              {galleryImages.map((item) => (
-                <div key={item.id} className="relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 group cursor-pointer">
-                  <img
-                    src={item.src}
-                    alt={item.alt}
-                    className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center">
-                    <button className="bg-gold text-dark px-6 py-2 rounded-lg font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-opacity-90">
-                      مشاهده
-                    </button>
-                  </div>
+      {/* Gallery */}
+      <section id="gallery" className={`py-20 ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'}`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="section-title text-center">نمونه کارها</h2>
+          <div className="grid md:grid-cols-4 gap-6 mt-12">
+            {galleryImages.map((img, i) => (
+              <div
+                key={i}
+                className="relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 group h-64 cursor-pointer"
+              >
+                <img
+                  src={img}
+                  alt={`نمونه کار ${i + 1}`}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  onError={(e) => {
+                    e.target.src = galleryImages[0]
+                  }}
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center">
+                  <Button variant="gold" className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    مشاهده
+                  </Button>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Quick Contact */}
-        <section className={`py-20 ${isDarkMode ? 'bg-gray-900' : 'bg-dark'} ${isDarkMode ? 'text-cream' : 'text-cream'}`}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              آماده برای عکاسی <span className="text-gold">حرفه‌ای</span>؟
-            </h2>
-            <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
-              امروز تماس بگیرید و رزرو خود را برای یک جلسه عکاسی فوق‌العاده انجام دهید.
-            </p>
-            <a href="tel:02112345678" className="btn-gold inline-block">
-              ۰۲۱-۱۲۳۴۵۶۷۸
-            </a>
-          </div>
-        </section>
-      </div>
-    );
+      {/* CTA */}
+      <section className={`py-20 ${isDarkMode ? 'bg-gray-900' : 'bg-dark'} text-cream`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            آماده برای عکاسی <span className="text-gold">حرفه‌ای</span>؟
+          </h2>
+          <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
+            امروز تماس بگیرید و رزرو خود را برای یک جلسه عکاسی فوق‌العاده انجام دهید.
+          </p>
+          <Button variant="gold" size="lg">
+            ۰۹۱۲-۸۹۰۱۲۳۴
+          </Button>
+        </div>
+      </section>
+    </div>
+  )
 }
+
+export default Home

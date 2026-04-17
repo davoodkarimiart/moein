@@ -1,18 +1,21 @@
-import React, { useContext } from 'react';
-import { ThemeContext } from '../../context/ThemeContext';
+import React from 'react'
 
-export default function Card({ children, className = '', hover = true }) {
-  const { isDarkMode } = useContext(ThemeContext);
-
+const Card = ({ 
+  children, 
+  className = '',
+  hover = true,
+  ...props 
+}) => {
   return (
     <div
-      className={`
-        ${isDarkMode ? 'bg-gray-700 text-cream' : 'bg-white text-dark'} rounded-xl p-6 shadow-lg
-        ${hover ? 'hover:shadow-2xl transition-shadow duration-300' : ''}
-        ${className}
-      `}
+      className={`bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-gold/10 ${
+        hover ? 'hover:shadow-2xl hover:border-gold/30 transition-all duration-300 hover:-translate-y-1' : ''
+      } ${className}`}
+      {...props}
     >
       {children}
     </div>
-  );
+  )
 }
+
+export default Card
